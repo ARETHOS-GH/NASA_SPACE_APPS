@@ -29,7 +29,7 @@ app.post('/api/chat', async (req, res) => {
     }
 
     const completion = await groq.chat.completions.create({
-      model: "llama-3.3-70b-versatile", // Active, supported production model
+      model: "llama-3.1-8b-instant", // Active, supported production model
       messages: chatMessages || [{ role: "user", content: "Hello" }]
     });
 

@@ -20,8 +20,8 @@ app.post('/api/chat', async (req, res) => {
       return res.status(500).json({ error: "GEMINI_API_KEY is not configured on Render environment variables." });
     }
 
-    // Use the reliable gemini-1.5-flash model
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    // Updated to active model: gemini-2.5-flash
+    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
     // Extract the text prompt from either single message or array
     let promptText = message;

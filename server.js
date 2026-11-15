@@ -4,8 +4,16 @@ const path = require('path');
 const app = express();
 app.use(express.json());
 
-// Serve static frontend files
+// Serve static frontend files from your project directory
 app.use(express.static(__dirname));
+
+// System instruction to enforce clean, concise, structured formatting from the AI
+const SYSTEM_INSTRUCTION = `You are an expert science communicator and technical assistant for a NASA Space Apps project.
+Formatting Rules:
+1. Be extremely concise, direct, and professional.
+2. Avoid long, cluttered paragraphs. Use bullet points and bold text for key terms.
+3. Use markdown tables when comparing data or trends.
+4. Do not include chatty filler introductions; get straight to the facts.`;
 
 // Chat API endpoint using OpenRouter's free tier
 app.post('/api/chat', async (req, res) => {
@@ -13,12 +21,20 @@ app.post('/api/chat', async (req, res) => {
     const { messages, message } = req.body;
 
     if (!process.env.OPENROUTER_API_KEY) {
-      return res.status(500).json({ error: "OPENROUTER_API_KEY is not configured on Render." });
+      return res.status(500).json({ error: "OPENROUTER_API_KEY is not configured on Render environment variables." });
     }
 
-    let chatMessages = messages;
-    if (!chatMessages && message) {
-      chatMessages = [{ role: "user", content: message }];
+    // Build the message array including the system prompt directive
+    let chatMessages = [
+      { role: "system", content: SYSTEM_INSTRUCTION }
+    ];
+
+    if (Array.isArray(messages) && messages.length > 0) {
+      chatMessages = chatMessages.concat(messages);
+    } else if (message) {
+      chatMessages.push({ role: "user", content: message });
+    } else {
+      chatMessages.push({ role: "user", content: "Hello" });
     }
 
     // Call OpenRouter API (OpenAI-compatible format)
@@ -27,12 +43,12 @@ app.post('/api/chat', async (req, res) => {
       headers: {
         "Authorization": `Bearer ${process.env.OPENROUTER_API_KEY}`,
         "Content-Type": "application/json",
-        "HTTP-Referer": "https://render.com", // Optional, helps OpenRouter rank apps
+        "HTTP-Referer": "https://render.com", 
         "X-Title": "NASA Space Apps Project"
       },
       body: JSON.stringify({
         model: "openrouter/free", // Automatically selects an available free model
-        messages: chatMessages || [{ role: "user", content: "Hello" }]
+        messages: chatMessages
       })
     });
 

@@ -1,42 +1,52 @@
 const express = require('express');
-const { GoogleGenerativeAI } = require('@google/generative-ai');
 const path = require('path');
 
 const app = express();
 app.use(express.json());
 
-// Serve static frontend files (HTML, CSS, JS, visualization.html)
+// Serve static frontend files
 app.use(express.static(__dirname));
 
-// Initialize Gemini with your environment variable
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-
-// Chat API endpoint
+// Chat API endpoint using OpenRouter's free tier
 app.post('/api/chat', async (req, res) => {
   try {
     const { messages, message } = req.body;
 
-    if (!process.env.GEMINI_API_KEY) {
-      return res.status(500).json({ error: "GEMINI_API_KEY is not configured on Render environment variables." });
+    if (!process.env.OPENROUTER_API_KEY) {
+      return res.status(500).json({ error: "OPENROUTER_API_KEY is not configured on Render." });
     }
 
-    // Updated to active model: gemini-2.5-flash
-    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
-
-    // Extract the text prompt from either single message or array
-    let promptText = message;
-    if (!promptText && Array.isArray(messages) && messages.length > 0) {
-      promptText = messages[messages.length - 1].content;
+    let chatMessages = messages;
+    if (!chatMessages && message) {
+      chatMessages = [{ role: "user", content: message }];
     }
-    promptText = promptText || "Hello";
 
-    const result = await model.generateContent(promptText);
-    const response = await result.response;
-    const text = response.text();
+    // Call OpenRouter API (OpenAI-compatible format)
+    const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${process.env.OPENROUTER_API_KEY}`,
+        "Content-Type": "application/json",
+        "HTTP-Referer": "https://render.com", // Optional, helps OpenRouter rank apps
+        "X-Title": "NASA Space Apps Project"
+      },
+      body: JSON.stringify({
+        model: "openrouter/free", // Automatically selects an available free model
+        messages: chatMessages || [{ role: "user", content: "Hello" }]
+      })
+    });
 
-    res.json({ reply: text });
+    const data = await response.json();
+    
+    if (data.error) {
+      throw new Error(data.error.message || "OpenRouter error");
+    }
+
+    const reply = data.choices && data.choices[0] && data.choices[0].message ? data.choices[0].message.content : "";
+    res.json({ reply });
+
   } catch (error) {
-    console.error("Gemini API Error:", error);
+    console.error("API Error:", error);
     res.status(500).json({ error: error.message || "Internal Server Error" });
   }
 });

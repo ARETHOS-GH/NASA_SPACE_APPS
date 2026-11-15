@@ -1,34 +1,20 @@
 <!DOCTYPE html>
-<html lang="en"><head><meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Ghana Ozone Trend Explorer</title>
-<link rel="stylesheet" href="style.css"></head><body><main>
-<h1>Ghana Ozone Trend Explorer</h1>
-<p class="sub">Choose a region of Ghana, then a time range. The page measures the trend in total column ozone there, tests whether it is significant, and explains the result.</p>
-<section class="card">
- <p class="step">1 · Choose a region</p>
- <div class="presets" id="regions"></div>
- <p class="extent" id="extent"></p>
-</section>
-<section class="card">
- <p class="step">2 · Choose a time range</p>
- <div class="row">
-  <label>From year <b id="v0"></b><input type="range" id="s0" min="1980" max="2026" value="1980"></label>
-  <label>To year <b id="v1"></b><input type="range" id="s1" min="1980" max="2026" value="2026"></label>
- </div>
- <div class="presets" id="presets"></div>
-</section>
-<section class="card">
- <span class="badge" id="badge"></span>
- <div class="stats" id="stats"></div>
-</section>
-<section class="card">
- <h2 id="ctitle"></h2>
- <canvas id="chart" role="img" aria-label="Chart of ozone anomalies with trend line"></canvas>
- <div class="legend" id="legend"></div>
-</section>
-<section class="card" id="summary"><h2>Summary</h2><div id="text"></div><ul id="caveats"></ul></section>
-<footer>Data: NASA MERRA-2 monthly mean total column ozone (TO3), area-averaged over the selected region via NASA Giovanni, Jan 1980 – Sep 2026. Seasonal cycle removed by subtracting each calendar month’s long-term average. Trend: linear regression on monthly anomalies with an autocorrelation-adjusted p-value, cross-checked with the Mann–Kendall test on annual means. 1 DU = Dobson Unit.</footer>
-</main>
-<script src="data.js"></script>
-<script src="script.js"></script></body></html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>OzonePulse</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="hero" role="img" aria-label="Satellite orbiting Earth"></div>
+  <main class="content">
+    <h1>This is Tropos</h1>
+    <p>A visually comprehensive way to view the health of the Earth's troposphere</p>
+    <a class="btn" href="explore.html">let’s get started</a>
+  </main>
+</body>
+</html>

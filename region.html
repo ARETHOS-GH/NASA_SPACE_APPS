@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Choose a Region and Time Range | Tropos</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script src="region.js" defer></script>
+</head>
+<body>
+  <div class="hero" aria-hidden="true"></div>
+  <main class="selection-content">
+    <a class="back-link" href="explore.html">Back to explore</a>
+    <h1>Select a region and time range</h1>
+    <p class="selection-description">Enter a region of interest and choose the years you want to explore. The available time range is 1980–2026.</p>
+
+    <form class="selection-form" id="selection-form">
+      <label for="region">Region of interest
+        <select id="region" name="region" required>
+          <option value="" disabled selected>Select a region</option>
+          <option value="Global">Global</option>
+          <option value="North America">North America</option>
+          <option value="Central America and the Caribbean">Central America and the Caribbean</option>
+          <option value="South America">South America</option>
+          <option value="Europe">Europe</option>
+          <option value="North Africa">North Africa</option>
+          <option value="Sub-Saharan Africa">Sub-Saharan Africa</option>
+          <option value="Middle East">Middle East</option>
+          <option value="Central Asia">Central Asia</option>
+          <option value="South Asia">South Asia</option>
+          <option value="East Asia">East Asia</option>
+          <option value="Southeast Asia">Southeast Asia</option>
+          <option value="Oceania">Oceania</option>
+          <option value="Antarctica">Antarctica</option>
+        </select>
+      </label>
+
+      <fieldset>
+        <legend>Time range</legend>
+        <div class="range-values">
+          <span>From <output id="start-output" for="start-year">1980</output></span>
+          <span>To <output id="end-output" for="end-year">2026</output></span>
+        </div>
+        <div class="range-slider">
+          <div class="range-track" aria-hidden="true"></div>
+          <div class="range-selection" id="range-selection" aria-hidden="true"></div>
+          <input id="start-year" name="start-year" type="range" min="1980" max="2026" value="1980" aria-label="Start year">
+          <input id="end-year" name="end-year" type="range" min="1980" max="2026" value="2026" aria-label="End year">
+        </div>
+        <div class="range-boundaries" aria-hidden="true"><span>1980</span><span>2026</span></div>
+      </fieldset>
+
+      <button class="btn" type="submit">Apply selection</button>
+    </form>
+  </main>
+</body>
+</html>

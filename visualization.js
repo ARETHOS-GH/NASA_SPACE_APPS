@@ -41,10 +41,11 @@
       $('chart-status-text').textContent = message || '';
     },
     showError(message, retry) {
-      $('chart-error').hidden = !message;
-      $('chart-error-text').textContent = message || '';
-      $('chart-retry').hidden = !retry;
-      retryHandler = retry || null;
+      // Error prompt suppressed per request; banner remains hidden
+      $('chart-error').hidden = true;
+      $('chart-error-text').textContent = '';
+      $('chart-retry').hidden = true;
+      retryHandler = null;
     },
     sync2d, // re-applies this chart's own loading/error state when switching back to 2D
   };
@@ -55,7 +56,7 @@
   function sync2d() {
     if (T.state.active !== '2d') return;
     T.ui.setLoading(loading2d ? 'Loading ozone data…' : null);
-    T.ui.showError(error2d, error2d ? load : null);
+    T.ui.showError(null);
   }
 
   /* ---------- chart ---------- */
@@ -140,7 +141,7 @@
     } catch (err) {
       if (controller !== mine) return; // superseded by a newer request
       show({ series: T.sampleSeries(sel.region, sel.start, sel.end), unit: T.SAMPLE_UNIT, source: '', isSample: true });
-      error2d = `Couldn't load ozone data (${err.message}). Showing illustrative sample data instead.`;
+      error2d = null; // Error prompt suppressed
     }
     if (controller === mine) { loading2d = false; sync2d(); }
   }

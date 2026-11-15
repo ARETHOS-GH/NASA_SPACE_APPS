@@ -7,13 +7,13 @@ app.use(express.json());
 // Serve static frontend files from your project directory
 app.use(express.static(__dirname));
 
-// System instruction to enforce clean, concise, structured formatting from the AI
-const SYSTEM_INSTRUCTION = `You are an expert science communicator and technical assistant for a NASA Space Apps project.
-Formatting Rules:
-1. Be extremely concise, direct, and professional.
-2. Avoid long, cluttered paragraphs. Use bullet points and bold text for key terms.
-3. Use markdown tables when comparing data or trends.
-4. Do not include chatty filler introductions; get straight to the facts.`;
+// Ultra-strict system directive to force crisp, concise, executive-level summaries
+const SYSTEM_INSTRUCTION = `You are an elite scientific assistant for a NASA Space Apps project.
+MANDATORY FORMATTING RULES:
+1. **Zero Fluff:** Never use conversational openings (e.g., "Sure, I can help with that!"). Start your response immediately with the core answer.
+2. **Concise Bullet Points:** Keep explanations under 4-5 bullet points maximum. Never write dense paragraphs.
+3. **High-Impact Bold:** Bold all key terms, metrics, and dates so they can be scanned in 2 seconds.
+4. **Structured Tables:** Use a markdown table only for direct comparisons.`;
 
 // Chat API endpoint using OpenRouter's free tier
 app.post('/api/chat', async (req, res) => {
@@ -24,7 +24,7 @@ app.post('/api/chat', async (req, res) => {
       return res.status(500).json({ error: "OPENROUTER_API_KEY is not configured on Render environment variables." });
     }
 
-    // Build the message array including the system prompt directive
+    // Build the message array including the strict formatting system prompt
     let chatMessages = [
       { role: "system", content: SYSTEM_INSTRUCTION }
     ];
@@ -47,8 +47,9 @@ app.post('/api/chat', async (req, res) => {
         "X-Title": "NASA Space Apps Project"
       },
       body: JSON.stringify({
-        model: "openrouter/free", // Automatically selects an available free model
-        messages: chatMessages
+        model: "openrouter/free", 
+        messages: chatMessages,
+        temperature: 0.3 // Lower temperature makes responses more precise and less chatty
       })
     });
 

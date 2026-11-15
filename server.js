@@ -1,5 +1,5 @@
 const express = require('express');
-const { GoogleGenAI } = require('@google/genai');
+const { GoogleGenerativeAI } = require('@google/generative-ai');
 const path = require('path');
 
 const app = express();
@@ -8,10 +8,8 @@ app.use(express.json());
 // Serve static frontend files (HTML, CSS, JS, visualization.html)
 app.use(express.static(__dirname));
 
-// Initialize Google Gen AI securely from Render's environment variables
-const ai = new GoogleGenAI({
-  apiKey: process.env.GEMINI_API_KEY
-});
+// Initialize Gemini with your environment variable
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 // Chat API endpoint
 app.post('/api/chat', async (req, res) => {
@@ -19,27 +17,24 @@ app.post('/api/chat', async (req, res) => {
     const { messages, message } = req.body;
 
     if (!process.env.GEMINI_API_KEY) {
-      return res.status(500).json({ error: "GEMINI_API_KEY is not configured on Render." });
+      return res.status(500).json({ error: "GEMINI_API_KEY is not configured on Render environment variables." });
     }
 
-    // Format incoming messages for Gemini
-    let promptContents;
-    if (Array.isArray(messages) && messages.length > 0) {
-      // Convert standard OpenAI/Groq role format ('user'/'assistant') to Gemini format ('user'/'model')
-      promptContents = messages.map(msg => ({
-        role: msg.role === 'assistant' ? 'model' : 'user',
-        parts: [{ text: msg.content }]
-      }));
-    } else {
-      promptContents = message || "Hello";
+    // Use the reliable gemini-1.5-flash model
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+
+    // Extract the text prompt from either single message or array
+    let promptText = message;
+    if (!promptText && Array.isArray(messages) && messages.length > 0) {
+      promptText = messages[messages.length - 1].content;
     }
+    promptText = promptText || "Hello";
 
-    const response = await ai.models.generateContent({
-      model: 'gemini-2.5-flash',
-      contents: promptContents
-    });
+    const result = await model.generateContent(promptText);
+    const response = await result.response;
+    const text = response.text();
 
-    res.json({ reply: response.text || "" });
+    res.json({ reply: text });
   } catch (error) {
     console.error("Gemini API Error:", error);
     res.status(500).json({ error: error.message || "Internal Server Error" });

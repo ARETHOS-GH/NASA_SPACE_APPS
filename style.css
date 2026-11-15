@@ -1,8 +1,14 @@
 :root {
   --bg: #dce1f0;
   --ink: #101a4a;
-  --accent: #e0002a;
+  --accent: #fff;
   --font: "Roboto Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, "Courier New", monospace;
+
+  /* Background settings: put your image beside this file, then adjust these values. */
+  --hero-image: url("troposphere.jpg");
+  --hero-position: center;
+  --hero-size: cover;
+  --hero-overlay: rgba(5, 7, 15, 0.55);
 }
 
 * { box-sizing: border-box; }
@@ -10,38 +16,43 @@
 html, body { height: 100%; margin: 0; }
 
 body {
-  display: flex;
   font-family: var(--font);
-  background: var(--bg);
+  background: #05070f;
 }
 
-/* Left: satellite image */
 .hero {
-  flex: 0 0 45%;
-  background: #05070f url("satellite.jpg") center / cover no-repeat;
+  position: fixed;
+  inset: 0;
+  background:
+    linear-gradient(var(--hero-overlay), var(--hero-overlay)),
+    var(--hero-image) var(--hero-position) / var(--hero-size) no-repeat;
+    color: white;
 }
 
-/* Right: title + button */
 .content {
-  flex: 1;
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: 40px;
   padding: 32px;
+  color: #fff;
 }
 
 h1 {
   margin: 0;
   font-size: clamp(32px, 4.5vw, 48px);
   font-weight: 700;
-  color: var(--accent);
+  color: white;
 }
 
 .btn {
   display: inline-block;
   padding: 12px 28px;
+  border: 0;
   background: var(--ink);
   color: var(--accent);
   font-family: inherit;
@@ -49,14 +60,378 @@ h1 {
   font-weight: 700;
   text-decoration: none;
   border-radius: 4px;
+  cursor: pointer;
   transition: opacity 0.15s, transform 0.1s;
 }
 .btn:hover { opacity: 0.9; }
 .btn:active { transform: scale(0.98); }
 .btn:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
 
-/* Phones: image on top, content below */
+.explore-content {
+  position: relative;
+  z-index: 1;
+  max-width: 1120px;
+  min-height: 100vh;
+  margin: 0 auto;
+  padding: 32px clamp(24px, 6vw, 80px);
+  color: #fff;
+}
+
+.back-link {
+  color: inherit;
+  font-size: 14px;
+  text-decoration: none;
+}
+
+.back-link:hover { text-decoration: underline; }
+
+.explore-intro {
+  max-width: 720px;
+  padding: clamp(56px, 12vh, 120px) 0 56px;
+}
+
+.explore-intro h1 {
+  margin: 0 0 20px;
+}
+
+.explore-intro p,
+.explore-card p {
+  color: rgba(255, 255, 255, 0.88);
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+.site-summary {
+  max-width: 720px;
+  margin-bottom: 24px;
+  padding: 20px 24px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  background: rgba(5, 7, 15, 0.65);
+}
+
+.site-summary h2 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.site-summary p {
+  margin: 8px 0 0;
+  color: rgba(255, 255, 255, 0.88);
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+.explore-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.explore-card {
+  padding: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  background: rgba(5, 7, 15, 0.65);
+}
+
+.explore-card h2 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.explore-card p { margin-bottom: 0; }
+
+.explore-next { margin-top: 28px; }
+
 @media (max-width: 700px) {
-  body { flex-direction: column; }
-  .hero { flex: 0 0 45%; }
+  .explore-grid { grid-template-columns: 1fr; }
+  .explore-intro { padding-bottom: 40px; }
+}
+
+.selection-content {
+  position: relative;
+  z-index: 1;
+  max-width: 900px;
+  min-height: 100vh;
+  margin: 0 auto;
+  padding: 32px clamp(24px, 6vw, 80px);
+  color: #fff;
+}
+
+.selection-content h1 {
+  margin: 56px 0 16px;
+}
+
+.selection-description {
+  max-width: 650px;
+  color: rgba(255, 255, 255, 0.88);
+  line-height: 1.7;
+}
+
+.selection-form {
+  display: grid;
+  gap: 28px;
+  max-width: 680px;
+  margin-top: 36px;
+  padding: 28px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  background: rgba(5, 7, 15, 0.72);
+}
+
+.selection-form label,
+.selection-form legend {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.selection-form input[type="text"],
+.selection-form select {
+  display: block;
+  width: 100%;
+  margin-top: 10px;
+  padding: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  font: inherit;
+}
+
+.selection-form select option {
+  color: #fff;
+  background: #101a4a;
+}
+
+.selection-form fieldset {
+  display: grid;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.selection-form legend { margin-bottom: 8px; }
+
+.range-values,
+.range-boundaries {
+  display: flex;
+  justify-content: space-between;
+}
+
+.range-values {
+  font-size: 14px;
+}
+
+.range-values output {
+  margin-left: 4px;
+  font-size: 16px;
+}
+
+.range-slider {
+  position: relative;
+  height: 32px;
+}
+
+.range-track,
+.range-selection {
+  position: absolute;
+  top: 13px;
+  height: 6px;
+  border-radius: 3px;
+  pointer-events: none;
+}
+
+.range-track {
+  right: 0;
+  left: 0;
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.range-selection {
+  background: var(--accent);
+}
+
+.range-slider input[type="range"] {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 32px;
+  margin: 0;
+  appearance: none;
+  background: transparent;
+  pointer-events: none;
+}
+
+.range-slider input[type="range"]::-webkit-slider-runnable-track {
+  height: 6px;
+  background: transparent;
+}
+
+.range-slider input[type="range"]::-moz-range-track {
+  height: 6px;
+  background: transparent;
+}
+
+.range-slider input[type="range"]::-webkit-slider-thumb {
+  width: 20px;
+  height: 20px;
+  margin-top: -7px;
+  appearance: none;
+  border: 2px solid var(--ink);
+  border-radius: 50%;
+  background: #fff;
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+.range-slider input[type="range"]::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border: 2px solid var(--ink);
+  border-radius: 50%;
+  background: #fff;
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+.range-slider input[type="range"]:focus-visible::-webkit-slider-thumb,
+.range-slider input[type="range"]:focus-visible::-moz-range-thumb {
+  outline: 3px solid #fff;
+  outline-offset: 2px;
+}
+
+.range-boundaries {
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 12px;
+}
+
+.visualization-content {
+  position: relative;
+  z-index: 1;
+  max-width: 1160px;
+  min-height: 100vh;
+  margin: 0 auto;
+  padding: 32px clamp(24px, 6vw, 80px) 64px;
+  color: #fff;
+}
+
+.visualization-header {
+  max-width: 760px;
+  padding: 28px 0 12px;
+}
+
+.visualization-header h1 {
+  margin: 0 0 16px;
+}
+
+.visualization-header p {
+  color: rgba(255, 255, 255, 0.88);
+  line-height: 1.7;
+}
+
+.data-notice {
+  margin: 0 0 14px;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.visual-summary {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 24px;
+}
+
+.visual-summary article,
+.chart-panel {
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  background: rgba(5, 7, 15, 0.92);
+}
+
+.visual-summary article { padding: 20px; }
+
+.visual-summary h2 {
+  margin: 0 0 10px;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.visual-summary p {
+  margin: 0;
+  font-size: 18px;
+}
+
+.chart-panel {
+  padding: 24px;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.28);
+}
+
+.chart-heading h2 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.chart-heading p {
+  margin: 8px 0 20px;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 13px;
+}
+
+.chart-scroll { overflow-x: auto; }
+
+.chart-panel svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  min-width: 700px;
+}
+
+.chart-grid line {
+  stroke: rgba(255, 255, 255, 0.28);
+  stroke-width: 1;
+}
+
+.chart-axis-label {
+  fill: #fff;
+  font-family: var(--font);
+  font-size: 14px;
+}
+
+.chart-axis-caption,
+.chart-value-label {
+  fill: #fff;
+  font-family: var(--font);
+  font-size: 14px;
+}
+
+.chart-axis-caption { font-weight: 700; }
+.chart-value-label { font-size: 13px; }
+
+.chart-area { fill: rgba(103, 217, 255, 0.16); }
+
+.chart-line {
+  fill: none;
+  stroke: #67d9ff;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 4;
+}
+
+.chart-point {
+  fill: #67d9ff;
+  stroke: #05070f;
+  stroke-width: 3;
+}
+
+@media (max-width: 700px) {
+  .selection-content h1 { margin-top: 44px; }
+  .selection-form { padding: 20px; }
+  .visual-summary { grid-template-columns: 1fr; }
+  .chart-panel { padding: 16px; }
 }

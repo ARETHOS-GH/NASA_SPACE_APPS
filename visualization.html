@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Troposphere Data | Tropos</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script src="visualization.js" defer></script>
+</head>
+<body>
+  <div class="hero" aria-hidden="true"></div>
+  <main class="visualization-content">
+    <a class="back-link" href="region.html">Adjust region and time</a>
+    <header class="visualization-header">
+      <h1>Troposphere data</h1>
+      <p>Illustrative ozone index for your selected region and time period.</p>
+    </header>
+
+    <p class="data-notice"><strong>Sample data only:</strong> These generated values are illustrative, not real measurements or NASA observations.</p>
+
+    <section class="chart-panel" aria-labelledby="chart-heading">
+      <div class="chart-heading">
+        <h2 id="chart-heading">Ozone index over time</h2>
+        <p>Relative sample index (0–60)</p>
+      </div>
+      <div class="chart-scroll">
+        <svg viewBox="0 0 900 420" role="img" aria-labelledby="chart-title chart-description">
+          <title id="chart-title">Illustrative sample ozone index over time</title>
+          <desc id="chart-description">A generated example line chart. Values are not observed measurements.</desc>
+          <g class="chart-grid" id="chart-grid"></g>
+          <path class="chart-area" id="chart-area"></path>
+          <path class="chart-line" id="chart-line"></path>
+          <g id="chart-points"></g>
+          <g id="chart-labels"></g>
+        </svg>
+      </div>
+    </section>
+
+    <section class="visual-summary" aria-label="Selected visualization details">
+      <article>
+        <h2>Region</h2>
+        <p id="selected-region"></p>
+      </article>
+      <article>
+        <h2>Time period</h2>
+        <p id="selected-period"></p>
+      </article>
+      <article>
+        <h2>Metric</h2>
+        <p>Sample ozone index</p>
+      </article>
+    </section>
+  </main>
+</body>
+</html>

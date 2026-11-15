@@ -1,16 +1,16 @@
 const express = require('express');
-const Groq = require('groq-sdk');
+const { GoogleGenAI } = require('@google/genai');
 const path = require('path');
 
 const app = express();
 app.use(express.json());
 
-// Serve static frontend files from your project folder (HTML, CSS, JS, visualization.html)
+// Serve static frontend files (HTML, CSS, JS, visualization.html)
 app.use(express.static(__dirname));
 
-// Initialize the Groq SDK securely using Render's environment variables
-const groq = new Groq({
-  apiKey: process.env.GROQ_API_KEY
+// Initialize Google Gen AI securely from Render's environment variables
+const ai = new GoogleGenAI({
+  apiKey: process.env.GEMINI_API_KEY
 });
 
 // Chat API endpoint
@@ -18,24 +18,30 @@ app.post('/api/chat', async (req, res) => {
   try {
     const { messages, message } = req.body;
 
-    if (!process.env.GROQ_API_KEY) {
-      return res.status(500).json({ error: "GROQ_API_KEY is not configured on the server environment variables." });
+    if (!process.env.GEMINI_API_KEY) {
+      return res.status(500).json({ error: "GEMINI_API_KEY is not configured on Render." });
     }
 
-    // Support both array of messages or single message payloads from frontend
-    let chatMessages = messages;
-    if (!chatMessages && message) {
-      chatMessages = [{ role: "user", content: message }];
+    // Format incoming messages for Gemini
+    let promptContents;
+    if (Array.isArray(messages) && messages.length > 0) {
+      // Convert standard OpenAI/Groq role format ('user'/'assistant') to Gemini format ('user'/'model')
+      promptContents = messages.map(msg => ({
+        role: msg.role === 'assistant' ? 'model' : 'user',
+        parts: [{ text: msg.content }]
+      }));
+    } else {
+      promptContents = message || "Hello";
     }
 
-    const completion = await groq.chat.completions.create({
-      model: "llama-3.1-8b-instant", // Active, supported production model
-      messages: chatMessages || [{ role: "user", content: "Hello" }]
+    const response = await ai.models.generateContent({
+      model: 'gemini-2.5-flash',
+      contents: promptContents
     });
 
-    res.json({ reply: completion.choices[0]?.message?.content || "" });
+    res.json({ reply: response.text || "" });
   } catch (error) {
-    console.error("Groq API Error Response:", error);
+    console.error("Gemini API Error:", error);
     res.status(500).json({ error: error.message || "Internal Server Error" });
   }
 });

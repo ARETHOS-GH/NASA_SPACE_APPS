@@ -8,7 +8,11 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
+  <!-- Order matters: config first, then the chart (defines T.ui), then chat and 3D. -->
+  <script src="config.js" defer></script>
   <script src="visualization.js" defer></script>
+  <script src="chat.js" defer></script>
+  <script src="view3d.js" defer></script>
 </head>
 <body>
   <div class="hero" aria-hidden="true"></div>
@@ -16,26 +20,66 @@
     <a class="back-link" href="region.html">Adjust region and time</a>
     <header class="visualization-header">
       <h1>Troposphere data</h1>
-      <p>Illustrative ozone index for your selected region and time period.</p>
+      <p>Ozone for your selected region and time period.</p>
     </header>
 
-    <p class="data-notice"><strong>Sample data only:</strong> These generated values are illustrative, not real measurements or NASA observations.</p>
+    <p class="data-notice" id="data-notice" role="status">Loading data…</p>
 
-    <section class="chart-panel" aria-labelledby="chart-heading">
-      <div class="chart-heading">
-        <h2 id="chart-heading">Ozone index over time</h2>
-        <p>Relative sample index (0–60)</p>
+    <section class="chart-panel" id="chart-panel" aria-labelledby="chart-heading" aria-busy="true">
+      <div class="chart-top">
+        <div class="chart-heading">
+          <h2 id="chart-heading">Ozone over time</h2>
+          <p id="chart-subtitle">Loading…</p>
+        </div>
+        <div class="view-toggle" role="group" aria-label="Chart view">
+          <button type="button" id="view-2d" aria-pressed="true">2D chart</button>
+          <button type="button" id="view-3d" aria-pressed="false">3D view</button>
+        </div>
       </div>
-      <div class="chart-scroll">
-        <svg viewBox="0 0 900 420" role="img" aria-labelledby="chart-title chart-description">
-          <title id="chart-title">Illustrative sample ozone index over time</title>
-          <desc id="chart-description">A generated example line chart. Values are not observed measurements.</desc>
-          <g class="chart-grid" id="chart-grid"></g>
-          <path class="chart-area" id="chart-area"></path>
-          <path class="chart-line" id="chart-line"></path>
-          <g id="chart-points"></g>
-          <g id="chart-labels"></g>
-        </svg>
+
+      <div class="chart-status" id="chart-status" role="status" hidden>
+        <span class="spinner" aria-hidden="true"></span>
+        <span id="chart-status-text"></span>
+      </div>
+      <div class="chart-error" id="chart-error" role="alert" hidden>
+        <span id="chart-error-text"></span>
+        <button type="button" class="chip-btn" id="chart-retry">Try again</button>
+      </div>
+
+      <div id="pane-2d">
+        <div class="chart-scroll">
+          <svg id="chart-svg" viewBox="0 0 900 420" role="img" aria-labelledby="chart-title chart-description">
+            <title id="chart-title">Ozone over time</title>
+            <desc id="chart-description">Line chart of ozone over time.</desc>
+            <g class="chart-grid" id="chart-grid"></g>
+            <path class="chart-area" id="chart-area"></path>
+            <path class="chart-line" id="chart-line"></path>
+            <g id="chart-points"></g>
+            <g id="chart-labels"></g>
+          </svg>
+        </div>
+      </div>
+
+      <div id="pane-3d" hidden>
+        <div class="view3d-controls" role="group" aria-label="3D view controls">
+          <button type="button" class="chip-btn" id="v3-left">Rotate left</button>
+          <button type="button" class="chip-btn" id="v3-right">Rotate right</button>
+          <button type="button" class="chip-btn" id="v3-in">Zoom in</button>
+          <button type="button" class="chip-btn" id="v3-out">Zoom out</button>
+          <button type="button" class="chip-btn" id="v3-reset">Reset view</button>
+        </div>
+        <div class="view3d-stage" id="view3d-stage">
+          <div class="view3d-tooltip" id="view3d-tip" role="presentation" hidden></div>
+        </div>
+        <p class="view3d-help" id="view3d-help">
+          Drag to rotate. With the chart focused, use the arrow keys to rotate and tilt, + and − to zoom, and 0 to reset.
+          Hover or tap a bar to see its value. Cyan bars are the region you selected.
+        </p>
+        <p class="view3d-desc" id="view3d-desc"></p>
+        <details class="data-table-details">
+          <summary>Show the same data as a table</summary>
+          <div class="data-table-wrap" id="view3d-table"></div>
+        </details>
       </div>
     </section>
 
@@ -50,8 +94,24 @@
       </article>
       <article>
         <h2>Metric</h2>
-        <p>Sample ozone index</p>
+        <p id="selected-metric">Loading…</p>
       </article>
+    </section>
+
+    <section class="chat-panel" aria-labelledby="chat-heading-main">
+      <h2 id="chat-heading-main">Ask about this data</h2>
+      <p class="chat-context" id="chat-context"></p>
+      <div class="chat-log" id="chat-log" role="log" aria-live="polite" aria-relevant="additions" aria-label="Conversation" tabindex="0"></div>
+      <p class="visually-hidden" id="chat-status" role="status"></p>
+      <form class="chat-form" id="chat-form" autocomplete="off">
+        <label for="chat-input">Your question</label>
+        <textarea id="chat-input" name="message" rows="2" maxlength="1000"
+          placeholder="e.g. How did ozone change over this period?" aria-describedby="chat-hint"></textarea>
+        <div class="chat-actions">
+          <span class="chat-hint" id="chat-hint">Enter to send · Shift+Enter for a new line</span>
+          <button class="btn" type="submit" id="chat-send">Send</button>
+        </div>
+      </form>
     </section>
   </main>
 </body>
